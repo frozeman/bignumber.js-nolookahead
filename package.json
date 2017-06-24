@@ -1,58 +1,4 @@
 {
-  "_args": [
-    [
-      {
-        "raw": "bignumber.js@git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-        "scope": null,
-        "escapedName": "bignumber.js",
-        "name": "bignumber.js",
-        "rawSpec": "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-        "spec": "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-        "type": "hosted",
-        "hosted": {
-          "type": "github",
-          "ssh": "git@github.com:debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-          "sshUrl": "git+ssh://git@github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-          "httpsUrl": "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-          "gitUrl": "git://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-          "shortcut": "github:debris/bignumber.js#94d7146671b9719e00a09c29b01a691bc85048c2",
-          "directUrl": "https://raw.githubusercontent.com/debris/bignumber.js/94d7146671b9719e00a09c29b01a691bc85048c2/package.json"
-        }
-      },
-      "/Users/frozeman/Sites/_ethereum/mist"
-    ]
-  ],
-  "_from": "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-  "_id": "bignumber.js@2.0.7",
-  "_inCache": true,
-  "_location": "/web3/bignumber.js",
-  "_phantomChildren": {},
-  "_requested": {
-    "raw": "bignumber.js@git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-    "scope": null,
-    "escapedName": "bignumber.js",
-    "name": "bignumber.js",
-    "rawSpec": "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-    "spec": "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-    "type": "hosted",
-    "hosted": {
-      "type": "github",
-      "ssh": "git@github.com:debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-      "sshUrl": "git+ssh://git@github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-      "httpsUrl": "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-      "gitUrl": "git://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-      "shortcut": "github:debris/bignumber.js#94d7146671b9719e00a09c29b01a691bc85048c2",
-      "directUrl": "https://raw.githubusercontent.com/debris/bignumber.js/94d7146671b9719e00a09c29b01a691bc85048c2/package.json"
-    }
-  },
-  "_requiredBy": [
-    "/web3"
-  ],
-  "_resolved": "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-  "_shasum": "3b1d535745a52d8ba14f875f555d3fee68f01bc7",
-  "_shrinkwrap": null,
-  "_spec": "bignumber.js@git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2",
-  "_where": "/Users/frozeman/Sites/_ethereum/mist",
   "author": {
     "name": "Michael Mclaughlin",
     "email": "M8ch88l@gmail.com"
@@ -66,7 +12,6 @@
   "engines": {
     "node": "*"
   },
-  "gitHead": "94d7146671b9719e00a09c29b01a691bc85048c2",
   "homepage": "https://github.com/MikeMcl/bignumber.js#readme",
   "keywords": [
     "arbitrary",
