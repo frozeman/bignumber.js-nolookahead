@@ -1,6 +1,6 @@
 /*! bignumber.js v2.0.7 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
-;(function (global) {
+; (function (global) {
     'use strict';
 
     /*
@@ -151,37 +151,37 @@
          * n {number|string|BigNumber} A numeric value.
          * [b] {number} The base of n. Integer, 2 to 64 inclusive.
          */
-        function BigNumber( n, b ) {
+        function BigNumber(n, b) {
             var c, e, i, num, len, str,
                 x = this;
 
             // Enable constructor usage without new.
-            if ( !( x instanceof BigNumber ) ) {
+            if (!(x instanceof BigNumber)) {
 
                 // 'BigNumber() constructor call without new: {n}'
-                if (ERRORS) raise( 26, 'constructor call without new', n );
-                return new BigNumber( n, b );
+                if (ERRORS) raise(26, 'constructor call without new', n);
+                return new BigNumber(n, b);
             }
 
             // 'new BigNumber() base not an integer: {b}'
             // 'new BigNumber() base out of range: {b}'
-            if ( b == null || !isValidInt( b, 2, 64, id, 'base' ) ) {
+            if (b == null || !isValidInt(b, 2, 64, id, 'base')) {
 
                 // Duplicate.
-                if ( n instanceof BigNumber ) {
+                if (n instanceof BigNumber) {
                     x.s = n.s;
                     x.e = n.e;
-                    x.c = ( n = n.c ) ? n.slice() : n;
+                    x.c = (n = n.c) ? n.slice() : n;
                     id = 0;
                     return;
                 }
 
-                if ( ( num = typeof n == 'number' ) && n * 0 == 0 ) {
-                    x.s = 1 / n < 0 ? ( n = -n, -1 ) : 1;
+                if ((num = typeof n == 'number') && n * 0 == 0) {
+                    x.s = 1 / n < 0 ? (n = -n, -1) : 1;
 
                     // Fast path for integers.
-                    if ( n === ~~n ) {
-                        for ( e = 0, i = n; i >= 10; i /= 10, e++ );
+                    if (n === ~~n) {
+                        for (e = 0, i = n; i >= 10; i /= 10, e++);
                         x.e = e;
                         x.c = [n];
                         id = 0;
@@ -190,8 +190,8 @@
 
                     str = n + '';
                 } else {
-                    if ( !isNumeric.test( str = n + '' ) ) return parseNumeric( x, str, num );
-                    x.s = str.charCodeAt(0) === 45 ? ( str = str.slice(1), -1 ) : 1;
+                    if (!isNumeric.test(str = n + '')) return parseNumeric(x, str, num);
+                    x.s = str.charCodeAt(0) === 45 ? (str = str.slice(1), -1) : 1;
                 }
             } else {
                 b = b | 0;
@@ -199,80 +199,80 @@
 
                 // Ensure return value is rounded to DECIMAL_PLACES as with other bases.
                 // Allow exponential notation to be used with base 10 argument.
-                if ( b == 10 ) {
-                    x = new BigNumber( n instanceof BigNumber ? n : str );
-                    return round( x, DECIMAL_PLACES + x.e + 1, ROUNDING_MODE );
+                if (b == 10) {
+                    x = new BigNumber(n instanceof BigNumber ? n : str);
+                    return round(x, DECIMAL_PLACES + x.e + 1, ROUNDING_MODE);
                 }
 
                 // Avoid potential interpretation of Infinity and NaN as base 44+ values.
                 // Any number in exponential form will fail due to the [Ee][+-].
-                if ( ( num = typeof n == 'number' ) && n * 0 != 0 ||
-                  !( new RegExp( '^-?' + ( c = '[' + ALPHABET.slice( 0, b ) + ']+' ) +
-                    '(?:\\.' + c + ')?$',b < 37 ? 'i' : '' ) ).test(str) ) {
-                    return parseNumeric( x, str, num, b );
+                if ((num = typeof n == 'number') && n * 0 != 0 ||
+                    !(new RegExp('^-?' + (c = '[' + ALPHABET.slice(0, b) + ']+') +
+                        '(?:\\.' + c + ')?$', b < 37 ? 'i' : '')).test(str)) {
+                    return parseNumeric(x, str, num, b);
                 }
 
                 if (num) {
-                    x.s = 1 / n < 0 ? ( str = str.slice(1), -1 ) : 1;
+                    x.s = 1 / n < 0 ? (str = str.slice(1), -1) : 1;
 
-                    if ( ERRORS && str.replace( /^0\.0*|\./, '' ).length > 15 ) {
+                    if (ERRORS && str.replace(/^0\.0*|\./, '').length > 15) {
 
                         // 'new BigNumber() number type has more than 15 significant digits: {n}'
-                        raise( id, tooManyDigits, n );
+                        raise(id, tooManyDigits, n);
                     }
 
                     // Prevent later check for length on converted number.
                     num = false;
                 } else {
-                    x.s = str.charCodeAt(0) === 45 ? ( str = str.slice(1), -1 ) : 1;
+                    x.s = str.charCodeAt(0) === 45 ? (str = str.slice(1), -1) : 1;
                 }
 
-                str = convertBase( str, 10, b, x.s );
+                str = convertBase(str, 10, b, x.s);
             }
 
             // Decimal point?
-            if ( ( e = str.indexOf('.') ) > -1 ) str = str.replace( '.', '' );
+            if ((e = str.indexOf('.')) > -1) str = str.replace('.', '');
 
             // Exponential form?
-            if ( ( i = str.search( /e/i ) ) > 0 ) {
+            if ((i = str.search(/e/i)) > 0) {
 
                 // Determine exponent.
-                if ( e < 0 ) e = i;
-                e += +str.slice( i + 1 );
-                str = str.substring( 0, i );
-            } else if ( e < 0 ) {
+                if (e < 0) e = i;
+                e += +str.slice(i + 1);
+                str = str.substring(0, i);
+            } else if (e < 0) {
 
                 // Integer.
                 e = str.length;
             }
 
             // Determine leading zeros.
-            for ( i = 0; str.charCodeAt(i) === 48; i++ );
+            for (i = 0; str.charCodeAt(i) === 48; i++);
 
             // Determine trailing zeros.
-            for ( len = str.length; str.charCodeAt(--len) === 48; );
-            str = str.slice( i, len + 1 );
+            for (len = str.length; str.charCodeAt(--len) === 48;);
+            str = str.slice(i, len + 1);
 
             if (str) {
                 len = str.length;
 
                 // Disallow numbers with over 15 significant digits if number type.
                 // 'new BigNumber() number type has more than 15 significant digits: {n}'
-                if ( num && ERRORS && len > 15 ) raise( id, tooManyDigits, x.s * n );
+                if (num && ERRORS && len > 15) raise(id, tooManyDigits, x.s * n);
 
                 e = e - i - 1;
 
-                 // Overflow?
-                if ( e > MAX_EXP ) {
+                // Overflow?
+                if (e > MAX_EXP) {
 
                     // Infinity.
                     x.c = x.e = null;
 
-                // Underflow?
-                } else if ( e < MIN_EXP ) {
+                    // Underflow?
+                } else if (e < MIN_EXP) {
 
                     // Zero.
-                    x.c = [ x.e = 0 ];
+                    x.c = [x.e = 0];
                 } else {
                     x.e = e;
                     x.c = [];
@@ -281,14 +281,14 @@
 
                     // e is the base 10 exponent.
                     // i is where to slice str to get the first element of the coefficient array.
-                    i = ( e + 1 ) % LOG_BASE;
-                    if ( e < 0 ) i += LOG_BASE;
+                    i = (e + 1) % LOG_BASE;
+                    if (e < 0) i += LOG_BASE;
 
-                    if ( i < len ) {
-                        if (i) x.c.push( +str.slice( 0, i ) );
+                    if (i < len) {
+                        if (i) x.c.push(+str.slice(0, i));
 
-                        for ( len -= LOG_BASE; i < len; ) {
-                            x.c.push( +str.slice( i, i += LOG_BASE ) );
+                        for (len -= LOG_BASE; i < len;) {
+                            x.c.push(+str.slice(i, i += LOG_BASE));
                         }
 
                         str = str.slice(i);
@@ -297,13 +297,13 @@
                         i -= len;
                     }
 
-                    for ( ; i--; str += '0' );
-                    x.c.push( +str );
+                    for (; i--; str += '0');
+                    x.c.push(+str);
                 }
             } else {
 
                 // Zero.
-                x.c = [ x.e = 0 ];
+                x.c = [x.e = 0];
             }
 
             id = 0;
@@ -367,13 +367,13 @@
                 a = arguments,
                 o = a[0],
                 has = o && typeof o == 'object'
-                  ? function () { if ( o.hasOwnProperty(p) ) return ( v = o[p] ) != null; }
-                  : function () { if ( a.length > i ) return ( v = a[i++] ) != null; };
+                    ? function () { if (o.hasOwnProperty(p)) return (v = o[p]) != null; }
+                    : function () { if (a.length > i) return (v = a[i++]) != null; };
 
             // DECIMAL_PLACES {number} Integer, 0 to MAX inclusive.
             // 'config() DECIMAL_PLACES not an integer: {v}'
             // 'config() DECIMAL_PLACES out of range: {v}'
-            if ( has( p = 'DECIMAL_PLACES' ) && isValidInt( v, 0, MAX, 2, p ) ) {
+            if (has(p = 'DECIMAL_PLACES') && isValidInt(v, 0, MAX, 2, p)) {
                 DECIMAL_PLACES = v | 0;
             }
             r[p] = DECIMAL_PLACES;
@@ -381,7 +381,7 @@
             // ROUNDING_MODE {number} Integer, 0 to 8 inclusive.
             // 'config() ROUNDING_MODE not an integer: {v}'
             // 'config() ROUNDING_MODE out of range: {v}'
-            if ( has( p = 'ROUNDING_MODE' ) && isValidInt( v, 0, 8, 2, p ) ) {
+            if (has(p = 'ROUNDING_MODE') && isValidInt(v, 0, 8, 2, p)) {
                 ROUNDING_MODE = v | 0;
             }
             r[p] = ROUNDING_MODE;
@@ -390,47 +390,47 @@
             // Integer, -MAX to MAX inclusive or [integer -MAX to 0 inclusive, 0 to MAX inclusive].
             // 'config() EXPONENTIAL_AT not an integer: {v}'
             // 'config() EXPONENTIAL_AT out of range: {v}'
-            if ( has( p = 'EXPONENTIAL_AT' ) ) {
+            if (has(p = 'EXPONENTIAL_AT')) {
 
-                if ( isArray(v) ) {
-                    if ( isValidInt( v[0], -MAX, 0, 2, p ) && isValidInt( v[1], 0, MAX, 2, p ) ) {
+                if (isArray(v)) {
+                    if (isValidInt(v[0], -MAX, 0, 2, p) && isValidInt(v[1], 0, MAX, 2, p)) {
                         TO_EXP_NEG = v[0] | 0;
                         TO_EXP_POS = v[1] | 0;
                     }
-                } else if ( isValidInt( v, -MAX, MAX, 2, p ) ) {
-                    TO_EXP_NEG = -( TO_EXP_POS = ( v < 0 ? -v : v ) | 0 );
+                } else if (isValidInt(v, -MAX, MAX, 2, p)) {
+                    TO_EXP_NEG = -(TO_EXP_POS = (v < 0 ? -v : v) | 0);
                 }
             }
-            r[p] = [ TO_EXP_NEG, TO_EXP_POS ];
+            r[p] = [TO_EXP_NEG, TO_EXP_POS];
 
             // RANGE {number|number[]} Non-zero integer, -MAX to MAX inclusive or
             // [integer -MAX to -1 inclusive, integer 1 to MAX inclusive].
             // 'config() RANGE not an integer: {v}'
             // 'config() RANGE cannot be zero: {v}'
             // 'config() RANGE out of range: {v}'
-            if ( has( p = 'RANGE' ) ) {
+            if (has(p = 'RANGE')) {
 
-                if ( isArray(v) ) {
-                    if ( isValidInt( v[0], -MAX, -1, 2, p ) && isValidInt( v[1], 1, MAX, 2, p ) ) {
+                if (isArray(v)) {
+                    if (isValidInt(v[0], -MAX, -1, 2, p) && isValidInt(v[1], 1, MAX, 2, p)) {
                         MIN_EXP = v[0] | 0;
                         MAX_EXP = v[1] | 0;
                     }
-                } else if ( isValidInt( v, -MAX, MAX, 2, p ) ) {
-                    if ( v | 0 ) MIN_EXP = -( MAX_EXP = ( v < 0 ? -v : v ) | 0 );
-                    else if (ERRORS) raise( 2, p + ' cannot be zero', v );
+                } else if (isValidInt(v, -MAX, MAX, 2, p)) {
+                    if (v | 0) MIN_EXP = -(MAX_EXP = (v < 0 ? -v : v) | 0);
+                    else if (ERRORS) raise(2, p + ' cannot be zero', v);
                 }
             }
-            r[p] = [ MIN_EXP, MAX_EXP ];
+            r[p] = [MIN_EXP, MAX_EXP];
 
             // ERRORS {boolean|number} true, false, 1 or 0.
             // 'config() ERRORS not a boolean or binary digit: {v}'
-            if ( has( p = 'ERRORS' ) ) {
+            if (has(p = 'ERRORS')) {
 
-                if ( v === !!v || v === 1 || v === 0 ) {
+                if (v === !!v || v === 1 || v === 0) {
                     id = 0;
-                    isValidInt = ( ERRORS = !!v ) ? intValidatorWithErrors : intValidatorNoErrors;
+                    isValidInt = (ERRORS = !!v) ? intValidatorWithErrors : intValidatorNoErrors;
                 } else if (ERRORS) {
-                    raise( 2, p + notBool, v );
+                    raise(2, p + notBool, v);
                 }
             }
             r[p] = ERRORS;
@@ -438,13 +438,13 @@
             // CRYPTO {boolean|number} true, false, 1 or 0.
             // 'config() CRYPTO not a boolean or binary digit: {v}'
             // 'config() crypto unavailable: {crypto}'
-            if ( has( p = 'CRYPTO' ) ) {
+            if (has(p = 'CRYPTO')) {
 
-                if ( v === !!v || v === 1 || v === 0 ) {
-                    CRYPTO = !!( v && crypto && typeof crypto == 'object' );
-                    if ( v && !CRYPTO && ERRORS ) raise( 2, 'crypto unavailable', crypto );
+                if (v === !!v || v === 1 || v === 0) {
+                    CRYPTO = !!(v && crypto && typeof crypto == 'object');
+                    if (v && !CRYPTO && ERRORS) raise(2, 'crypto unavailable', crypto);
                 } else if (ERRORS) {
-                    raise( 2, p + notBool, v );
+                    raise(2, p + notBool, v);
                 }
             }
             r[p] = CRYPTO;
@@ -452,7 +452,7 @@
             // MODULO_MODE {number} Integer, 0 to 9 inclusive.
             // 'config() MODULO_MODE not an integer: {v}'
             // 'config() MODULO_MODE out of range: {v}'
-            if ( has( p = 'MODULO_MODE' ) && isValidInt( v, 0, 9, 2, p ) ) {
+            if (has(p = 'MODULO_MODE') && isValidInt(v, 0, 9, 2, p)) {
                 MODULO_MODE = v | 0;
             }
             r[p] = MODULO_MODE;
@@ -460,19 +460,19 @@
             // POW_PRECISION {number} Integer, 0 to MAX inclusive.
             // 'config() POW_PRECISION not an integer: {v}'
             // 'config() POW_PRECISION out of range: {v}'
-            if ( has( p = 'POW_PRECISION' ) && isValidInt( v, 0, MAX, 2, p ) ) {
+            if (has(p = 'POW_PRECISION') && isValidInt(v, 0, MAX, 2, p)) {
                 POW_PRECISION = v | 0;
             }
             r[p] = POW_PRECISION;
 
             // FORMAT {object}
             // 'config() FORMAT not an object: {v}'
-            if ( has( p = 'FORMAT' ) ) {
+            if (has(p = 'FORMAT')) {
 
-                if ( typeof v == 'object' ) {
+                if (typeof v == 'object') {
                     FORMAT = v;
                 } else if (ERRORS) {
-                    raise( 2, p + ' not an object', v );
+                    raise(2, p + ' not an object', v);
                 }
             }
             r[p] = FORMAT;
@@ -486,7 +486,7 @@
          *
          * arguments {number|string|BigNumber}
          */
-        BigNumber.max = function () { return maxOrMin( arguments, P.lt ); };
+        BigNumber.max = function () { return maxOrMin(arguments, P.lt); };
 
 
         /*
@@ -494,7 +494,7 @@
          *
          * arguments {number|string|BigNumber}
          */
-        BigNumber.min = function () { return maxOrMin( arguments, P.gt ); };
+        BigNumber.min = function () { return maxOrMin(arguments, P.gt); };
 
 
         /*
@@ -516,9 +516,11 @@
             // If it does, assume at least 53 bits are produced, otherwise assume at least 30 bits.
             // 0x40000000 is 2^30, 0x800000 is 2^23, 0x1fffff is 2^21 - 1.
             var random53bitInt = (Math.random() * pow2_53) & 0x1fffff
-              ? function () { return mathfloor( Math.random() * pow2_53 ); }
-              : function () { return ((Math.random() * 0x40000000 | 0) * 0x800000) +
-                  (Math.random() * 0x800000 | 0); };
+                ? function () { return mathfloor(Math.random() * pow2_53); }
+                : function () {
+                    return ((Math.random() * 0x40000000 | 0) * 0x800000) +
+                        (Math.random() * 0x800000 | 0);
+                };
 
             return function (dp) {
                 var a, b, e, k, v,
@@ -526,17 +528,17 @@
                     c = [],
                     rand = new BigNumber(ONE);
 
-                dp = dp == null || !isValidInt( dp, 0, MAX, 14 ) ? DECIMAL_PLACES : dp | 0;
-                k = mathceil( dp / LOG_BASE );
+                dp = dp == null || !isValidInt(dp, 0, MAX, 14) ? DECIMAL_PLACES : dp | 0;
+                k = mathceil(dp / LOG_BASE);
 
                 if (CRYPTO) {
 
                     // Browsers supporting crypto.getRandomValues.
-                    if ( crypto && crypto.getRandomValues ) {
+                    if (crypto && crypto.getRandomValues) {
 
-                        a = crypto.getRandomValues( new Uint32Array( k *= 2 ) );
+                        a = crypto.getRandomValues(new Uint32Array(k *= 2));
 
-                        for ( ; i < k; ) {
+                        for (; i < k;) {
 
                             // 53 bits:
                             // ((Math.pow(2, 32) - 1) * Math.pow(2, 21)).toString(2)
@@ -550,57 +552,57 @@
                             // 0 <= v < 9007199254740992
                             // Probability that v >= 9e15, is
                             // 7199254740992 / 9007199254740992 ~= 0.0008, i.e. 1 in 1251
-                            if ( v >= 9e15 ) {
-                                b = crypto.getRandomValues( new Uint32Array(2) );
+                            if (v >= 9e15) {
+                                b = crypto.getRandomValues(new Uint32Array(2));
                                 a[i] = b[0];
                                 a[i + 1] = b[1];
                             } else {
 
                                 // 0 <= v <= 8999999999999999
                                 // 0 <= (v % 1e14) <= 99999999999999
-                                c.push( v % 1e14 );
+                                c.push(v % 1e14);
                                 i += 2;
                             }
                         }
                         i = k / 2;
 
-                    // Node.js supporting crypto.randomBytes.
-                    } else if ( crypto && crypto.randomBytes ) {
+                        // Node.js supporting crypto.randomBytes.
+                    } else if (crypto && crypto.randomBytes) {
 
                         // buffer
-                        a = crypto.randomBytes( k *= 7 );
+                        a = crypto.randomBytes(k *= 7);
 
-                        for ( ; i < k; ) {
+                        for (; i < k;) {
 
                             // 0x1000000000000 is 2^48, 0x10000000000 is 2^40
                             // 0x100000000 is 2^32, 0x1000000 is 2^24
                             // 11111 11111111 11111111 11111111 11111111 11111111 11111111
                             // 0 <= v < 9007199254740992
-                            v = ( ( a[i] & 31 ) * 0x1000000000000 ) + ( a[i + 1] * 0x10000000000 ) +
-                                  ( a[i + 2] * 0x100000000 ) + ( a[i + 3] * 0x1000000 ) +
-                                  ( a[i + 4] << 16 ) + ( a[i + 5] << 8 ) + a[i + 6];
+                            v = ((a[i] & 31) * 0x1000000000000) + (a[i + 1] * 0x10000000000) +
+                                (a[i + 2] * 0x100000000) + (a[i + 3] * 0x1000000) +
+                                (a[i + 4] << 16) + (a[i + 5] << 8) + a[i + 6];
 
-                            if ( v >= 9e15 ) {
-                                crypto.randomBytes(7).copy( a, i );
+                            if (v >= 9e15) {
+                                crypto.randomBytes(7).copy(a, i);
                             } else {
 
                                 // 0 <= (v % 1e14) <= 99999999999999
-                                c.push( v % 1e14 );
+                                c.push(v % 1e14);
                                 i += 7;
                             }
                         }
                         i = k / 7;
                     } else if (ERRORS) {
-                        raise( 14, 'crypto unavailable', crypto );
+                        raise(14, 'crypto unavailable', crypto);
                     }
                 }
 
                 // Use Math.random: CRYPTO is false or crypto is unavailable and ERRORS is false.
                 if (!i) {
 
-                    for ( ; i < k; ) {
+                    for (; i < k;) {
                         v = random53bitInt();
-                        if ( v < 9e15 ) c[i++] = v % 1e14;
+                        if (v < 9e15) c[i++] = v % 1e14;
                     }
                 }
 
@@ -608,27 +610,27 @@
                 dp %= LOG_BASE;
 
                 // Convert trailing digits to zeros according to dp.
-                if ( k && dp ) {
+                if (k && dp) {
                     v = POWS_TEN[LOG_BASE - dp];
-                    c[i] = mathfloor( k / v ) * v;
+                    c[i] = mathfloor(k / v) * v;
                 }
 
                 // Remove trailing elements which are zero.
-                for ( ; c[i] === 0; c.pop(), i-- );
+                for (; c[i] === 0; c.pop(), i--);
 
                 // Zero?
-                if ( i < 0 ) {
-                    c = [ e = 0 ];
+                if (i < 0) {
+                    c = [e = 0];
                 } else {
 
                     // Remove leading elements which are zero and adjust exponent accordingly.
-                    for ( e = -1 ; c[0] === 0; c.shift(), e -= LOG_BASE);
+                    for (e = -1; c[0] === 0; c.shift(), e -= LOG_BASE);
 
                     // Count the digits of the first element of c to determine leading zeros, and...
-                    for ( i = 1, v = c[0]; v >= 10; v /= 10, i++);
+                    for (i = 1, v = c[0]; v >= 10; v /= 10, i++);
 
                     // adjust the exponent accordingly.
-                    if ( i < LOG_BASE ) e -= LOG_BASE - i;
+                    if (i < LOG_BASE) e -= LOG_BASE - i;
                 }
 
                 rand.e = e;
@@ -642,40 +644,40 @@
 
 
         // Convert a numeric string of baseIn to a numeric string of baseOut.
-        function convertBase( str, baseOut, baseIn, sign ) {
+        function convertBase(str, baseOut, baseIn, sign) {
             var d, e, k, r, x, xc, y,
-                i = str.indexOf( '.' ),
+                i = str.indexOf('.'),
                 dp = DECIMAL_PLACES,
                 rm = ROUNDING_MODE;
 
-            if ( baseIn < 37 ) str = str.toLowerCase();
+            if (baseIn < 37) str = str.toLowerCase();
 
             // Non-integer.
-            if ( i >= 0 ) {
+            if (i >= 0) {
                 k = POW_PRECISION;
 
                 // Unlimited precision.
                 POW_PRECISION = 0;
-                str = str.replace( '.', '' );
+                str = str.replace('.', '');
                 y = new BigNumber(baseIn);
-                x = y.pow( str.length - i );
+                x = y.pow(str.length - i);
                 POW_PRECISION = k;
 
                 // Convert str as if an integer, then restore the fraction part by dividing the
                 // result by its base raised to a power.
-                y.c = toBaseOut( toFixedPoint( coeffToString( x.c ), x.e ), 10, baseOut );
+                y.c = toBaseOut(toFixedPoint(coeffToString(x.c), x.e), 10, baseOut);
                 y.e = y.c.length;
             }
 
             // Convert the number as integer.
-            xc = toBaseOut( str, baseIn, baseOut );
+            xc = toBaseOut(str, baseIn, baseOut);
             e = k = xc.length;
 
             // Remove trailing zeros.
-            for ( ; xc[--k] == 0; xc.pop() );
-            if ( !xc[0] ) return '0';
+            for (; xc[--k] == 0; xc.pop());
+            if (!xc[0]) return '0';
 
-            if ( i < 0 ) {
+            if (i < 0) {
                 --e;
             } else {
                 x.c = xc;
@@ -683,7 +685,7 @@
 
                 // sign is needed for correct rounding.
                 x.s = sign;
-                x = div( x, y, dp, rm, baseOut );
+                x = div(x, y, dp, rm, baseOut);
                 xc = x.c;
                 r = x.r;
                 e = x.e;
@@ -696,24 +698,24 @@
             k = baseOut / 2;
             r = r || d < 0 || xc[d + 1] != null;
 
-            r = rm < 4 ? ( i != null || r ) && ( rm == 0 || rm == ( x.s < 0 ? 3 : 2 ) )
-                       : i > k || i == k &&( rm == 4 || r || rm == 6 && xc[d - 1] & 1 ||
-                         rm == ( x.s < 0 ? 8 : 7 ) );
+            r = rm < 4 ? (i != null || r) && (rm == 0 || rm == (x.s < 0 ? 3 : 2))
+                : i > k || i == k && (rm == 4 || r || rm == 6 && xc[d - 1] & 1 ||
+                    rm == (x.s < 0 ? 8 : 7));
 
-            if ( d < 1 || !xc[0] ) {
+            if (d < 1 || !xc[0]) {
 
                 // 1^-dp or 0.
-                str = r ? toFixedPoint( '1', -dp ) : '0';
+                str = r ? toFixedPoint('1', -dp) : '0';
             } else {
                 xc.length = d;
 
                 if (r) {
 
                     // Rounding up may mean the previous digit has to be rounded up and so on.
-                    for ( --baseOut; ++xc[--d] > baseOut; ) {
+                    for (--baseOut; ++xc[--d] > baseOut;) {
                         xc[d] = 0;
 
-                        if ( !d ) {
+                        if (!d) {
                             ++e;
                             xc.unshift(1);
                         }
@@ -721,11 +723,11 @@
                 }
 
                 // Determine trailing zeros.
-                for ( k = xc.length; !xc[--k]; );
+                for (k = xc.length; !xc[--k];);
 
                 // E.g. [4, 11, 15] becomes 4bf.
-                for ( i = 0, str = ''; i <= k; str += ALPHABET.charAt( xc[i++] ) );
-                str = toFixedPoint( str, e );
+                for (i = 0, str = ''; i <= k; str += ALPHABET.charAt(xc[i++]));
+                str = toFixedPoint(str, e);
             }
 
             // The caller will add the sign.
@@ -737,19 +739,19 @@
         div = (function () {
 
             // Assume non-zero x and k.
-            function multiply( x, k, base ) {
+            function multiply(x, k, base) {
                 var m, temp, xlo, xhi,
                     carry = 0,
                     i = x.length,
                     klo = k % SQRT_BASE,
                     khi = k / SQRT_BASE | 0;
 
-                for ( x = x.slice(); i--; ) {
+                for (x = x.slice(); i--;) {
                     xlo = x[i] % SQRT_BASE;
                     xhi = x[i] / SQRT_BASE | 0;
                     m = khi * xlo + xhi * klo;
-                    temp = klo * xlo + ( ( m % SQRT_BASE ) * SQRT_BASE ) + carry;
-                    carry = ( temp / base | 0 ) + ( m / SQRT_BASE | 0 ) + khi * xhi;
+                    temp = klo * xlo + ((m % SQRT_BASE) * SQRT_BASE) + carry;
+                    carry = (temp / base | 0) + (m / SQRT_BASE | 0) + khi * xhi;
                     x[i] = temp % base;
                 }
 
@@ -758,16 +760,16 @@
                 return x;
             }
 
-            function compare( a, b, aL, bL ) {
+            function compare(a, b, aL, bL) {
                 var i, cmp;
 
-                if ( aL != bL ) {
+                if (aL != bL) {
                     cmp = aL > bL ? 1 : -1;
                 } else {
 
-                    for ( i = cmp = 0; i < aL; i++ ) {
+                    for (i = cmp = 0; i < aL; i++) {
 
-                        if ( a[i] != b[i] ) {
+                        if (a[i] != b[i]) {
                             cmp = a[i] > b[i] ? 1 : -1;
                             break;
                         }
@@ -776,22 +778,22 @@
                 return cmp;
             }
 
-            function subtract( a, b, aL, base ) {
+            function subtract(a, b, aL, base) {
                 var i = 0;
 
                 // Subtract b from a.
-                for ( ; aL--; ) {
+                for (; aL--;) {
                     a[aL] -= i;
                     i = a[aL] < b[aL] ? 1 : 0;
                     a[aL] = i * base + a[aL] - b[aL];
                 }
 
                 // Remove leading zeros.
-                for ( ; !a[0] && a.length > 1; a.shift() );
+                for (; !a[0] && a.length > 1; a.shift());
             }
 
             // x: dividend, y: divisor.
-            return function ( x, y, dp, rm, base ) {
+            return function (x, y, dp, rm, base) {
                 var cmp, e, i, more, n, prod, prodL, q, qc, rem, remL, rem0, xi, xL, yc0,
                     yL, yz,
                     s = x.s == y.s ? 1 : -1,
@@ -799,15 +801,15 @@
                     yc = y.c;
 
                 // Either NaN, Infinity or 0?
-                if ( !xc || !xc[0] || !yc || !yc[0] ) {
+                if (!xc || !xc[0] || !yc || !yc[0]) {
 
                     return new BigNumber(
 
-                      // Return NaN if either NaN, or both Infinity or 0.
-                      !x.s || !y.s || ( xc ? yc && xc[0] == yc[0] : !yc ) ? NaN :
+                        // Return NaN if either NaN, or both Infinity or 0.
+                        !x.s || !y.s || (xc ? yc && xc[0] == yc[0] : !yc) ? NaN :
 
-                        // Return ±0 if x is ±0 or y is ±Infinity, or return ±Infinity as y is ±0.
-                        xc && xc[0] == 0 || !yc ? s * 0 : s / 0
+                            // Return ±0 if x is ±0 or y is ±Infinity, or return ±Infinity as y is ±0.
+                            xc && xc[0] == 0 || !yc ? s * 0 : s / 0
                     );
                 }
 
@@ -816,18 +818,18 @@
                 e = x.e - y.e;
                 s = dp + e + 1;
 
-                if ( !base ) {
+                if (!base) {
                     base = BASE;
-                    e = bitFloor( x.e / LOG_BASE ) - bitFloor( y.e / LOG_BASE );
+                    e = bitFloor(x.e / LOG_BASE) - bitFloor(y.e / LOG_BASE);
                     s = s / LOG_BASE | 0;
                 }
 
                 // Result exponent may be one less then the current value of e.
                 // The coefficients of the BigNumbers from convertBase may have trailing zeros.
-                for ( i = 0; yc[i] == ( xc[i] || 0 ); i++ );
-                if ( yc[i] > ( xc[i] || 0 ) ) e--;
+                for (i = 0; yc[i] == (xc[i] || 0); i++);
+                if (yc[i] > (xc[i] || 0)) e--;
 
-                if ( s < 0 ) {
+                if (s < 0) {
                     qc.push(1);
                     more = true;
                 } else {
@@ -838,27 +840,27 @@
 
                     // Normalise xc and yc so highest order digit of yc is >= base / 2.
 
-                    n = mathfloor( base / ( yc[0] + 1 ) );
+                    n = mathfloor(base / (yc[0] + 1));
 
                     // Not necessary, but to handle odd bases where yc[0] == ( base / 2 ) - 1.
                     // if ( n > 1 || n++ == 1 && yc[0] < base / 2 ) {
-                    if ( n > 1 ) {
-                        yc = multiply( yc, n, base );
-                        xc = multiply( xc, n, base );
+                    if (n > 1) {
+                        yc = multiply(yc, n, base);
+                        xc = multiply(xc, n, base);
                         yL = yc.length;
                         xL = xc.length;
                     }
 
                     xi = yL;
-                    rem = xc.slice( 0, yL );
+                    rem = xc.slice(0, yL);
                     remL = rem.length;
 
                     // Add zeros to make remainder as long as divisor.
-                    for ( ; remL < yL; rem[remL++] = 0 );
+                    for (; remL < yL; rem[remL++] = 0);
                     yz = yc.slice();
                     yz.unshift(0);
                     yc0 = yc[0];
-                    if ( yc[1] >= base / 2 ) yc0++;
+                    if (yc[1] >= base / 2) yc0++;
                     // Not necessary, but to prevent trial digit n > base, when using base 3.
                     // else if ( base == 3 && yc0 == 1 ) yc0 = 1 + 1e-15;
 
@@ -866,18 +868,18 @@
                         n = 0;
 
                         // Compare divisor and remainder.
-                        cmp = compare( yc, rem, yL, remL );
+                        cmp = compare(yc, rem, yL, remL);
 
                         // If divisor < remainder.
-                        if ( cmp < 0 ) {
+                        if (cmp < 0) {
 
                             // Calculate trial digit, n.
 
                             rem0 = rem[0];
-                            if ( yL != remL ) rem0 = rem0 * base + ( rem[1] || 0 );
+                            if (yL != remL) rem0 = rem0 * base + (rem[1] || 0);
 
                             // n is how many times the divisor goes into the current remainder.
-                            n = mathfloor( rem0 / yc0 );
+                            n = mathfloor(rem0 / yc0);
 
                             //  Algorithm:
                             //  1. product = divisor * trial digit (n)
@@ -887,13 +889,13 @@
                             //    5. compare new remainder and divisor
                             //    6. If remainder > divisor: remainder -= divisor, n++
 
-                            if ( n > 1 ) {
+                            if (n > 1) {
 
                                 // n may be > base only when base is 3.
                                 if (n >= base) n = base - 1;
 
                                 // product = divisor * trial digit.
-                                prod = multiply( yc, n, base );
+                                prod = multiply(yc, n, base);
                                 prodL = prod.length;
                                 remL = rem.length;
 
@@ -902,11 +904,11 @@
                                 // Trial digit n too high.
                                 // n is 1 too high about 5% of the time, and is not known to have
                                 // ever been more than 1 too high.
-                                while ( compare( prod, rem, prodL, remL ) == 1 ) {
+                                while (compare(prod, rem, prodL, remL) == 1) {
                                     n--;
 
                                     // Subtract divisor from product.
-                                    subtract( prod, yL < prodL ? yz : yc, prodL, base );
+                                    subtract(prod, yL < prodL ? yz : yc, prodL, base);
                                     prodL = prod.length;
                                     cmp = 1;
                                 }
@@ -916,7 +918,7 @@
                                 // If n is 0, there is no need to compare yc and rem again below,
                                 // so change cmp to 1 to avoid it.
                                 // If n is 1, leave cmp as -1, so yc and rem are compared again.
-                                if ( n == 0 ) {
+                                if (n == 0) {
 
                                     // divisor < remainder, so n must be at least 1.
                                     cmp = n = 1;
@@ -927,28 +929,28 @@
                                 prodL = prod.length;
                             }
 
-                            if ( prodL < remL ) prod.unshift(0);
+                            if (prodL < remL) prod.unshift(0);
 
                             // Subtract product from remainder.
-                            subtract( rem, prod, remL, base );
+                            subtract(rem, prod, remL, base);
                             remL = rem.length;
 
-                             // If product was < remainder.
-                            if ( cmp == -1 ) {
+                            // If product was < remainder.
+                            if (cmp == -1) {
 
                                 // Compare divisor and new remainder.
                                 // If divisor < new remainder, subtract divisor from remainder.
                                 // Trial digit n too low.
                                 // n is 1 too low about 5% of the time, and very rarely 2 too low.
-                                while ( compare( yc, rem, yL, remL ) < 1 ) {
+                                while (compare(yc, rem, yL, remL) < 1) {
                                     n++;
 
                                     // Subtract divisor from remainder.
-                                    subtract( rem, yL < remL ? yz : yc, remL, base );
+                                    subtract(rem, yL < remL ? yz : yc, remL, base);
                                     remL = rem.length;
                                 }
                             }
-                        } else if ( cmp === 0 ) {
+                        } else if (cmp === 0) {
                             n++;
                             rem = [0];
                         } // else cmp === 1 and n will be 0
@@ -957,27 +959,27 @@
                         qc[i++] = n;
 
                         // Update the remainder.
-                        if ( rem[0] ) {
+                        if (rem[0]) {
                             rem[remL++] = xc[xi] || 0;
                         } else {
-                            rem = [ xc[xi] ];
+                            rem = [xc[xi]];
                             remL = 1;
                         }
-                    } while ( ( xi++ < xL || rem[0] != null ) && s-- );
+                    } while ((xi++ < xL || rem[0] != null) && s--);
 
                     more = rem[0] != null;
 
                     // Leading zero?
-                    if ( !qc[0] ) qc.shift();
+                    if (!qc[0]) qc.shift();
                 }
 
-                if ( base == BASE ) {
+                if (base == BASE) {
 
                     // To calculate q.e, first get the number of digits of qc[0].
-                    for ( i = 1, s = qc[0]; s >= 10; s /= 10, i++ );
-                    round( q, dp + ( q.e = i + e * LOG_BASE - 1 ) + 1, rm, more );
+                    for (i = 1, s = qc[0]; s >= 10; s /= 10, i++);
+                    round(q, dp + (q.e = i + e * LOG_BASE - 1) + 1, rm, more);
 
-                // Caller is convertBase.
+                    // Caller is convertBase.
                 } else {
                     q.e = e;
                     q.r = +more;
@@ -997,28 +999,28 @@
          * rm is the rounding mode.
          * caller is caller id: toExponential 19, toFixed 20, toFormat 21, toPrecision 24.
          */
-        function format( n, i, rm, caller ) {
+        function format(n, i, rm, caller) {
             var c0, e, ne, len, str;
 
-            rm = rm != null && isValidInt( rm, 0, 8, caller, roundingMode )
-              ? rm | 0 : ROUNDING_MODE;
+            rm = rm != null && isValidInt(rm, 0, 8, caller, roundingMode)
+                ? rm | 0 : ROUNDING_MODE;
 
-            if ( !n.c ) return n.toString();
+            if (!n.c) return n.toString();
             c0 = n.c[0];
             ne = n.e;
 
-            if ( i == null ) {
-                str = coeffToString( n.c );
+            if (i == null) {
+                str = coeffToString(n.c);
                 str = caller == 19 || caller == 24 && ne <= TO_EXP_NEG
-                  ? toExponential( str, ne )
-                  : toFixedPoint( str, ne );
+                    ? toExponential(str, ne)
+                    : toFixedPoint(str, ne);
             } else {
-                n = round( new BigNumber(n), i, rm );
+                n = round(new BigNumber(n), i, rm);
 
                 // n.e may have changed if the value was rounded up.
                 e = n.e;
 
-                str = coeffToString( n.c );
+                str = coeffToString(n.c);
                 len = str.length;
 
                 // toPrecision returns exponential notation if the number of significant digits
@@ -1026,25 +1028,25 @@
                 // part of the value in fixed-point notation.
 
                 // Exponential notation.
-                if ( caller == 19 || caller == 24 && ( i <= e || e <= TO_EXP_NEG ) ) {
+                if (caller == 19 || caller == 24 && (i <= e || e <= TO_EXP_NEG)) {
 
                     // Append zeros?
-                    for ( ; len < i; str += '0', len++ );
-                    str = toExponential( str, e );
+                    for (; len < i; str += '0', len++);
+                    str = toExponential(str, e);
 
-                // Fixed-point notation.
+                    // Fixed-point notation.
                 } else {
                     i -= ne;
-                    str = toFixedPoint( str, e );
+                    str = toFixedPoint(str, e);
 
                     // Append zeros?
-                    if ( e + 1 > len ) {
-                        if ( --i > 0 ) for ( str += '.'; i--; str += '0' );
+                    if (e + 1 > len) {
+                        if (--i > 0) for (str += '.'; i--; str += '0');
                     } else {
                         i += e - len;
-                        if ( i > 0 ) {
-                            if ( e + 1 == len ) str += '.';
-                            for ( ; i--; str += '0' );
+                        if (i > 0) {
+                            if (e + 1 == len) str += '.';
+                            for (; i--; str += '0');
                         }
                     }
                 }
@@ -1055,21 +1057,21 @@
 
 
         // Handle BigNumber.max and BigNumber.min.
-        function maxOrMin( args, method ) {
+        function maxOrMin(args, method) {
             var m, n,
                 i = 0;
 
-            if ( isArray( args[0] ) ) args = args[0];
-            m = new BigNumber( args[0] );
+            if (isArray(args[0])) args = args[0];
+            m = new BigNumber(args[0]);
 
-            for ( ; ++i < args.length; ) {
-                n = new BigNumber( args[i] );
+            for (; ++i < args.length;) {
+                n = new BigNumber(args[i]);
 
                 // If any number is NaN, return NaN.
-                if ( !n.s ) {
+                if (!n.s) {
                     m = n;
                     break;
-                } else if ( method.call( m, n ) ) {
+                } else if (method.call(m, n)) {
                     m = n;
                 }
             }
@@ -1082,10 +1084,10 @@
          * Return true if n is an integer in range, otherwise throw.
          * Use for argument validation when ERRORS is true.
          */
-        function intValidatorWithErrors( n, min, max, caller, name ) {
-            if ( n < min || n > max || n != truncate(n) ) {
-                raise( caller, ( name || 'decimal places' ) +
-                  ( n < min || n > max ? ' out of range' : ' not an integer' ), n );
+        function intValidatorWithErrors(n, min, max, caller, name) {
+            if (n < min || n > max || n != truncate(n)) {
+                raise(caller, (name || 'decimal places') +
+                    (n < min || n > max ? ' out of range' : ' not an integer'), n);
             }
 
             return true;
@@ -1096,27 +1098,27 @@
          * Strip trailing zeros, calculate base 10 exponent and check against MIN_EXP and MAX_EXP.
          * Called by minus, plus and times.
          */
-        function normalise( n, c, e ) {
+        function normalise(n, c, e) {
             var i = 1,
                 j = c.length;
 
-             // Remove trailing zeros.
-            for ( ; !c[--j]; c.pop() );
+            // Remove trailing zeros.
+            for (; !c[--j]; c.pop());
 
             // Calculate the base 10 exponent. First get the number of digits of c[0].
-            for ( j = c[0]; j >= 10; j /= 10, i++ );
+            for (j = c[0]; j >= 10; j /= 10, i++);
 
             // Overflow?
-            if ( ( e = i + e * LOG_BASE - 1 ) > MAX_EXP ) {
+            if ((e = i + e * LOG_BASE - 1) > MAX_EXP) {
 
                 // Infinity.
                 n.c = n.e = null;
 
-            // Underflow?
-            } else if ( e < MIN_EXP ) {
+                // Underflow?
+            } else if (e < MIN_EXP) {
 
                 // Zero.
-                n.c = [ n.e = 0 ];
+                n.c = [n.e = 0];
             } else {
                 n.e = e;
                 n.c = c;
@@ -1134,19 +1136,19 @@
                 isInfinityOrNaN = /^-?(Infinity|NaN)$/,
                 whitespaceOrPlus = /^\s*\+|^\s+|\s+$/g;
 
-            return function ( x, str, num, b ) {
+            return function (x, str, num, b) {
                 var base,
-                    s = num ? str : str.replace( whitespaceOrPlus, '' );
+                    s = num ? str : str.replace(whitespaceOrPlus, '');
 
                 // No exception on ±Infinity or NaN.
-                if ( isInfinityOrNaN.test(s) ) {
+                if (isInfinityOrNaN.test(s)) {
                     x.s = isNaN(s) ? null : s < 0 ? -1 : 1;
                 } else {
-                    if ( !num ) {
+                    if (!num) {
 
                         // basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i
-                        s = s.replace( basePrefix, function ( m, p1, p2 ) {
-                            base = ( p2 = p2.toLowerCase() ) == 'x' ? 16 : p2 == 'b' ? 2 : 8;
+                        s = s.replace(basePrefix, function (m, p1, p2) {
+                            base = (p2 = p2.toLowerCase()) == 'x' ? 16 : p2 == 'b' ? 2 : 8;
                             return !b || b == base ? p1 : m;
                         });
 
@@ -1154,15 +1156,15 @@
                             base = b;
 
                             // E.g. '1.' to '1', '.1' to '0.1'
-                            s = s.replace( dotAfter, '$1' ).replace( dotBefore, '0.$1' );
+                            s = s.replace(dotAfter, '$1').replace(dotBefore, '0.$1');
                         }
 
-                        if ( str != s ) return new BigNumber( s, base );
+                        if (str != s) return new BigNumber(s, base);
                     }
 
                     // 'new BigNumber() not a number: {n}'
                     // 'new BigNumber() not a base {b} number: {n}'
-                    if (ERRORS) raise( id, 'not a' + ( b ? ' base ' + b : '' ) + ' number', str );
+                    if (ERRORS) raise(id, 'not a' + (b ? ' base ' + b : '') + ' number', str);
                     x.s = null;
                 }
 
@@ -1173,8 +1175,8 @@
 
 
         // Throw a BigNumber Error.
-        function raise( caller, msg, val ) {
-            var error = new Error( [
+        function raise(caller, msg, val) {
+            var error = new Error([
                 'new BigNumber',     // 0
                 'cmp',               // 1
                 'config',            // 2
@@ -1202,7 +1204,7 @@
                 'toPrecision',       // 24
                 'toString',          // 25
                 'BigNumber'          // 26
-            ][caller] + '() ' + msg + ': ' + val );
+            ][caller] + '() ' + msg + ': ' + val);
 
             error.name = 'BigNumber Error';
             id = 0;
@@ -1214,7 +1216,7 @@
          * Round x to sd significant digits using rounding mode rm. Check for over/under-flow.
          * If r is truthy, it is known that there are more digits after the rounding digit.
          */
-        function round( x, sd, rm, r ) {
+        function round(x, sd, rm, r) {
             var d, i, j, k, n, ni, rd,
                 xc = x.c,
                 pows10 = POWS_TEN;
@@ -1231,26 +1233,26 @@
                 out: {
 
                     // Get the number of digits of the first element of xc.
-                    for ( d = 1, k = xc[0]; k >= 10; k /= 10, d++ );
+                    for (d = 1, k = xc[0]; k >= 10; k /= 10, d++);
                     i = sd - d;
 
                     // If the rounding digit is in the first element of xc...
-                    if ( i < 0 ) {
+                    if (i < 0) {
                         i += LOG_BASE;
                         j = sd;
-                        n = xc[ ni = 0 ];
+                        n = xc[ni = 0];
 
                         // Get the rounding digit at index j of n.
-                        rd = n / pows10[ d - j - 1 ] % 10 | 0;
+                        rd = n / pows10[d - j - 1] % 10 | 0;
                     } else {
-                        ni = mathceil( ( i + 1 ) / LOG_BASE );
+                        ni = mathceil((i + 1) / LOG_BASE);
 
-                        if ( ni >= xc.length ) {
+                        if (ni >= xc.length) {
 
                             if (r) {
 
                                 // Needed by sqrt.
-                                for ( ; xc.length <= ni; xc.push(0) );
+                                for (; xc.length <= ni; xc.push(0));
                                 n = rd = 0;
                                 d = 1;
                                 i %= LOG_BASE;
@@ -1262,7 +1264,7 @@
                             n = k = xc[ni];
 
                             // Get the number of digits of n.
-                            for ( d = 1; k >= 10; k /= 10, d++ );
+                            for (d = 1; k >= 10; k /= 10, d++);
 
                             // Get the index of rd within n.
                             i %= LOG_BASE;
@@ -1272,26 +1274,26 @@
                             j = i - LOG_BASE + d;
 
                             // Get the rounding digit at index j of n.
-                            rd = j < 0 ? 0 : n / pows10[ d - j - 1 ] % 10 | 0;
+                            rd = j < 0 ? 0 : n / pows10[d - j - 1] % 10 | 0;
                         }
                     }
 
                     r = r || sd < 0 ||
 
-                    // Are there any non-zero digits after the rounding digit?
-                    // The expression  n % pows10[ d - j - 1 ]  returns all digits of n to the right
-                    // of the digit at j, e.g. if n is 908714 and j is 2, the expression gives 714.
-                      xc[ni + 1] != null || ( j < 0 ? n : n % pows10[ d - j - 1 ] );
+                        // Are there any non-zero digits after the rounding digit?
+                        // The expression  n % pows10[ d - j - 1 ]  returns all digits of n to the right
+                        // of the digit at j, e.g. if n is 908714 and j is 2, the expression gives 714.
+                        xc[ni + 1] != null || (j < 0 ? n : n % pows10[d - j - 1]);
 
                     r = rm < 4
-                      ? ( rd || r ) && ( rm == 0 || rm == ( x.s < 0 ? 3 : 2 ) )
-                      : rd > 5 || rd == 5 && ( rm == 4 || r || rm == 6 &&
+                        ? (rd || r) && (rm == 0 || rm == (x.s < 0 ? 3 : 2))
+                        : rd > 5 || rd == 5 && (rm == 4 || r || rm == 6 &&
 
-                        // Check whether the digit to the left of the rounding digit is odd.
-                        ( ( i > 0 ? j > 0 ? n / pows10[ d - j ] : 0 : xc[ni - 1] ) % 10 ) & 1 ||
-                          rm == ( x.s < 0 ? 8 : 7 ) );
+                            // Check whether the digit to the left of the rounding digit is odd.
+                            ((i > 0 ? j > 0 ? n / pows10[d - j] : 0 : xc[ni - 1]) % 10) & 1 ||
+                            rm == (x.s < 0 ? 8 : 7));
 
-                    if ( sd < 1 || !xc[0] ) {
+                    if (sd < 1 || !xc[0]) {
                         xc.length = 0;
 
                         if (r) {
@@ -1300,7 +1302,7 @@
                             sd -= x.e + 1;
 
                             // 1, 0.1, 0.01, 0.001, 0.0001 etc.
-                            xc[0] = pows10[ sd % LOG_BASE ];
+                            xc[0] = pows10[sd % LOG_BASE];
                             x.e = -sd || 0;
                         } else {
 
@@ -1312,42 +1314,42 @@
                     }
 
                     // Remove excess digits.
-                    if ( i == 0 ) {
+                    if (i == 0) {
                         xc.length = ni;
                         k = 1;
                         ni--;
                     } else {
                         xc.length = ni + 1;
-                        k = pows10[ LOG_BASE - i ];
+                        k = pows10[LOG_BASE - i];
 
                         // E.g. 56700 becomes 56000 if 7 is the rounding digit.
                         // j > 0 means i > number of leading zeros of n.
-                        xc[ni] = j > 0 ? mathfloor( n / pows10[ d - j ] % pows10[j] ) * k : 0;
+                        xc[ni] = j > 0 ? mathfloor(n / pows10[d - j] % pows10[j]) * k : 0;
                     }
 
                     // Round up?
                     if (r) {
 
-                        for ( ; ; ) {
+                        for (; ;) {
 
                             // If the digit to be rounded up is in the first element of xc...
-                            if ( ni == 0 ) {
+                            if (ni == 0) {
 
                                 // i will be the length of xc[0] before k is added.
-                                for ( i = 1, j = xc[0]; j >= 10; j /= 10, i++ );
+                                for (i = 1, j = xc[0]; j >= 10; j /= 10, i++);
                                 j = xc[0] += k;
-                                for ( k = 1; j >= 10; j /= 10, k++ );
+                                for (k = 1; j >= 10; j /= 10, k++);
 
                                 // if i != k the length has increased.
-                                if ( i != k ) {
+                                if (i != k) {
                                     x.e++;
-                                    if ( xc[0] == BASE ) xc[0] = 1;
+                                    if (xc[0] == BASE) xc[0] = 1;
                                 }
 
                                 break;
                             } else {
                                 xc[ni] += k;
-                                if ( xc[ni] != BASE ) break;
+                                if (xc[ni] != BASE) break;
                                 xc[ni--] = 0;
                                 k = 1;
                             }
@@ -1355,16 +1357,16 @@
                     }
 
                     // Remove trailing zeros.
-                    for ( i = xc.length; xc[--i] === 0; xc.pop() );
+                    for (i = xc.length; xc[--i] === 0; xc.pop());
                 }
 
                 // Overflow? Infinity.
-                if ( x.e > MAX_EXP ) {
+                if (x.e > MAX_EXP) {
                     x.c = x.e = null;
 
-                // Underflow? Zero.
-                } else if ( x.e < MIN_EXP ) {
-                    x.c = [ x.e = 0 ];
+                    // Underflow? Zero.
+                } else if (x.e < MIN_EXP) {
+                    x.c = [x.e = 0];
                 }
             }
 
@@ -1380,7 +1382,7 @@
          */
         P.absoluteValue = P.abs = function () {
             var x = new BigNumber(this);
-            if ( x.s < 0 ) x.s = 1;
+            if (x.s < 0) x.s = 1;
             return x;
         };
 
@@ -1390,7 +1392,7 @@
          * number in the direction of Infinity.
          */
         P.ceil = function () {
-            return round( new BigNumber(this), this.e + 1, 2 );
+            return round(new BigNumber(this), this.e + 1, 2);
         };
 
 
@@ -1401,9 +1403,9 @@
          * 0 if they have the same value,
          * or null if the value of either is NaN.
          */
-        P.comparedTo = P.cmp = function ( y, b ) {
+        P.comparedTo = P.cmp = function (y, b) {
             id = 1;
-            return compare( this, new BigNumber( y, b ) );
+            return compare(this, new BigNumber(y, b));
         };
 
 
@@ -1415,12 +1417,12 @@
             var n, v,
                 c = this.c;
 
-            if ( !c ) return null;
-            n = ( ( v = c.length - 1 ) - bitFloor( this.e / LOG_BASE ) ) * LOG_BASE;
+            if (!c) return null;
+            n = ((v = c.length - 1) - bitFloor(this.e / LOG_BASE)) * LOG_BASE;
 
             // Subtract the number of trailing zeros of the last number.
-            if ( v = c[v] ) for ( ; v % 10 == 0; v /= 10, n-- );
-            if ( n < 0 ) n = 0;
+            if (v = c[v]) for (; v % 10 == 0; v /= 10, n--);
+            if (n < 0) n = 0;
 
             return n;
         };
@@ -1446,9 +1448,9 @@
          * Return a new BigNumber whose value is the value of this BigNumber divided by the value of
          * BigNumber(y, b), rounded according to DECIMAL_PLACES and ROUNDING_MODE.
          */
-        P.dividedBy = P.div = function ( y, b ) {
+        P.dividedBy = P.div = function (y, b) {
             id = 3;
-            return div( this, new BigNumber( y, b ), DECIMAL_PLACES, ROUNDING_MODE );
+            return div(this, new BigNumber(y, b), DECIMAL_PLACES, ROUNDING_MODE);
         };
 
 
@@ -1456,9 +1458,9 @@
          * Return a new BigNumber whose value is the integer part of dividing the value of this
          * BigNumber by the value of BigNumber(y, b).
          */
-        P.dividedToIntegerBy = P.divToInt = function ( y, b ) {
+        P.dividedToIntegerBy = P.divToInt = function (y, b) {
             id = 4;
-            return div( this, new BigNumber( y, b ), 0, 1 );
+            return div(this, new BigNumber(y, b), 0, 1);
         };
 
 
@@ -1466,9 +1468,9 @@
          * Return true if the value of this BigNumber is equal to the value of BigNumber(y, b),
          * otherwise returns false.
          */
-        P.equals = P.eq = function ( y, b ) {
+        P.equals = P.eq = function (y, b) {
             id = 5;
-            return compare( this, new BigNumber( y, b ) ) === 0;
+            return compare(this, new BigNumber(y, b)) === 0;
         };
 
 
@@ -1477,7 +1479,7 @@
          * number in the direction of -Infinity.
          */
         P.floor = function () {
-            return round( new BigNumber(this), this.e + 1, 3 );
+            return round(new BigNumber(this), this.e + 1, 3);
         };
 
 
@@ -1485,9 +1487,9 @@
          * Return true if the value of this BigNumber is greater than the value of BigNumber(y, b),
          * otherwise returns false.
          */
-        P.greaterThan = P.gt = function ( y, b ) {
+        P.greaterThan = P.gt = function (y, b) {
             id = 6;
-            return compare( this, new BigNumber( y, b ) ) > 0;
+            return compare(this, new BigNumber(y, b)) > 0;
         };
 
 
@@ -1495,9 +1497,9 @@
          * Return true if the value of this BigNumber is greater than or equal to the value of
          * BigNumber(y, b), otherwise returns false.
          */
-        P.greaterThanOrEqualTo = P.gte = function ( y, b ) {
+        P.greaterThanOrEqualTo = P.gte = function (y, b) {
             id = 7;
-            return ( b = compare( this, new BigNumber( y, b ) ) ) === 1 || b === 0;
+            return (b = compare(this, new BigNumber(y, b))) === 1 || b === 0;
 
         };
 
@@ -1514,7 +1516,7 @@
          * Return true if the value of this BigNumber is an integer, otherwise return false.
          */
         P.isInteger = P.isInt = function () {
-            return !!this.c && bitFloor( this.e / LOG_BASE ) > this.c.length - 2;
+            return !!this.c && bitFloor(this.e / LOG_BASE) > this.c.length - 2;
         };
 
 
@@ -1546,9 +1548,9 @@
          * Return true if the value of this BigNumber is less than the value of BigNumber(y, b),
          * otherwise returns false.
          */
-        P.lessThan = P.lt = function ( y, b ) {
+        P.lessThan = P.lt = function (y, b) {
             id = 8;
-            return compare( this, new BigNumber( y, b ) ) < 0;
+            return compare(this, new BigNumber(y, b)) < 0;
         };
 
 
@@ -1556,9 +1558,9 @@
          * Return true if the value of this BigNumber is less than or equal to the value of
          * BigNumber(y, b), otherwise returns false.
          */
-        P.lessThanOrEqualTo = P.lte = function ( y, b ) {
+        P.lessThanOrEqualTo = P.lte = function (y, b) {
             id = 9;
-            return ( b = compare( this, new BigNumber( y, b ) ) ) === -1 || b === 0;
+            return (b = compare(this, new BigNumber(y, b))) === -1 || b === 0;
         };
 
 
@@ -1582,20 +1584,20 @@
          * Return a new BigNumber whose value is the value of this BigNumber minus the value of
          * BigNumber(y, b).
          */
-        P.minus = P.sub = function ( y, b ) {
+        P.minus = P.sub = function (y, b) {
             var i, j, t, xLTy,
                 x = this,
                 a = x.s;
 
             id = 10;
-            y = new BigNumber( y, b );
+            y = new BigNumber(y, b);
             b = y.s;
 
             // Either NaN?
-            if ( !a || !b ) return new BigNumber(NaN);
+            if (!a || !b) return new BigNumber(NaN);
 
             // Signs differ?
-            if ( a != b ) {
+            if (a != b) {
                 y.s = -b;
                 return x.plus(y);
             }
@@ -1605,19 +1607,19 @@
                 xc = x.c,
                 yc = y.c;
 
-            if ( !xe || !ye ) {
+            if (!xe || !ye) {
 
                 // Either Infinity?
-                if ( !xc || !yc ) return xc ? ( y.s = -b, y ) : new BigNumber( yc ? x : NaN );
+                if (!xc || !yc) return xc ? (y.s = -b, y) : new BigNumber(yc ? x : NaN);
 
                 // Either zero?
-                if ( !xc[0] || !yc[0] ) {
+                if (!xc[0] || !yc[0]) {
 
                     // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
-                    return yc[0] ? ( y.s = -b, y ) : new BigNumber( xc[0] ? x :
+                    return yc[0] ? (y.s = -b, y) : new BigNumber(xc[0] ? x :
 
-                      // IEEE 754 (2008) 6.3: n - n = -0 when rounding to -Infinity
-                      ROUNDING_MODE == 3 ? -0 : 0 );
+                        // IEEE 754 (2008) 6.3: n - n = -0 when rounding to -Infinity
+                        ROUNDING_MODE == 3 ? -0 : 0);
                 }
             }
 
@@ -1626,9 +1628,9 @@
             xc = xc.slice();
 
             // Determine which is the bigger number.
-            if ( a = xe - ye ) {
+            if (a = xe - ye) {
 
-                if ( xLTy = a < 0 ) {
+                if (xLTy = a < 0) {
                     a = -a;
                     t = xc;
                 } else {
@@ -1639,16 +1641,16 @@
                 t.reverse();
 
                 // Prepend zeros to equalise exponents.
-                for ( b = a; b--; t.push(0) );
+                for (b = a; b--; t.push(0));
                 t.reverse();
             } else {
 
                 // Exponents equal. Check digit by digit.
-                j = ( xLTy = ( a = xc.length ) < ( b = yc.length ) ) ? a : b;
+                j = (xLTy = (a = xc.length) < (b = yc.length)) ? a : b;
 
-                for ( a = b = 0; b < j; b++ ) {
+                for (a = b = 0; b < j; b++) {
 
-                    if ( xc[b] != yc[b] ) {
+                    if (xc[b] != yc[b]) {
                         xLTy = xc[b] < yc[b];
                         break;
                     }
@@ -1658,18 +1660,18 @@
             // x < y? Point xc to the array of the bigger number.
             if (xLTy) t = xc, xc = yc, yc = t, y.s = -y.s;
 
-            b = ( j = yc.length ) - ( i = xc.length );
+            b = (j = yc.length) - (i = xc.length);
 
             // Append zeros to xc if shorter.
             // No need to add zeros to yc if shorter as subtract only needs to start at yc.length.
-            if ( b > 0 ) for ( ; b--; xc[i++] = 0 );
+            if (b > 0) for (; b--; xc[i++] = 0);
             b = BASE - 1;
 
             // Subtract yc from xc.
-            for ( ; j > a; ) {
+            for (; j > a;) {
 
-                if ( xc[--j] < yc[j] ) {
-                    for ( i = j; i && !xc[--i]; xc[i] = b );
+                if (xc[--j] < yc[j]) {
+                    for (i = j; i && !xc[--i]; xc[i] = b);
                     --xc[i];
                     xc[j] += BASE;
                 }
@@ -1678,21 +1680,21 @@
             }
 
             // Remove leading zeros and adjust exponent accordingly.
-            for ( ; xc[0] == 0; xc.shift(), --ye );
+            for (; xc[0] == 0; xc.shift(), --ye);
 
             // Zero?
-            if ( !xc[0] ) {
+            if (!xc[0]) {
 
                 // Following IEEE 754 (2008) 6.3,
                 // n - n = +0  but  n - n = -0  when rounding towards -Infinity.
                 y.s = ROUNDING_MODE == 3 ? -1 : 1;
-                y.c = [ y.e = 0 ];
+                y.c = [y.e = 0];
                 return y;
             }
 
             // No need to check for Infinity as +x - +y != Infinity && -x - -y != Infinity
             // for finite x and y.
-            return normalise( y, xc, ye );
+            return normalise(y, xc, ye);
         };
 
 
@@ -1717,36 +1719,36 @@
          * Return a new BigNumber whose value is the value of this BigNumber modulo the value of
          * BigNumber(y, b). The result depends on the value of MODULO_MODE.
          */
-        P.modulo = P.mod = function ( y, b ) {
+        P.modulo = P.mod = function (y, b) {
             var q, s,
                 x = this;
 
             id = 11;
-            y = new BigNumber( y, b );
+            y = new BigNumber(y, b);
 
             // Return NaN if x is Infinity or NaN, or y is NaN or zero.
-            if ( !x.c || !y.s || y.c && !y.c[0] ) {
+            if (!x.c || !y.s || y.c && !y.c[0]) {
                 return new BigNumber(NaN);
 
-            // Return x if y is Infinity or x is zero.
-            } else if ( !y.c || x.c && !x.c[0] ) {
+                // Return x if y is Infinity or x is zero.
+            } else if (!y.c || x.c && !x.c[0]) {
                 return new BigNumber(x);
             }
 
-            if ( MODULO_MODE == 9 ) {
+            if (MODULO_MODE == 9) {
 
                 // Euclidian division: q = sign(y) * floor(x / abs(y))
                 // r = x - qy    where  0 <= r < abs(y)
                 s = y.s;
                 y.s = 1;
-                q = div( x, y, 0, 3 );
+                q = div(x, y, 0, 3);
                 y.s = s;
                 q.s *= s;
             } else {
-                q = div( x, y, 0, MODULO_MODE );
+                q = div(x, y, 0, MODULO_MODE);
             }
 
-            return x.minus( q.times(y) );
+            return x.minus(q.times(y));
         };
 
 
@@ -1781,20 +1783,20 @@
          * Return a new BigNumber whose value is the value of this BigNumber plus the value of
          * BigNumber(y, b).
          */
-        P.plus = P.add = function ( y, b ) {
+        P.plus = P.add = function (y, b) {
             var t,
                 x = this,
                 a = x.s;
 
             id = 12;
-            y = new BigNumber( y, b );
+            y = new BigNumber(y, b);
             b = y.s;
 
             // Either NaN?
-            if ( !a || !b ) return new BigNumber(NaN);
+            if (!a || !b) return new BigNumber(NaN);
 
             // Signs differ?
-             if ( a != b ) {
+            if (a != b) {
                 y.s = -b;
                 return x.minus(y);
             }
@@ -1804,14 +1806,14 @@
                 xc = x.c,
                 yc = y.c;
 
-            if ( !xe || !ye ) {
+            if (!xe || !ye) {
 
                 // Return ±Infinity if either ±Infinity.
-                if ( !xc || !yc ) return new BigNumber( a / 0 );
+                if (!xc || !yc) return new BigNumber(a / 0);
 
                 // Either zero?
                 // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
-                if ( !xc[0] || !yc[0] ) return yc[0] ? y : new BigNumber( xc[0] ? x : a * 0 );
+                if (!xc[0] || !yc[0]) return yc[0] ? y : new BigNumber(xc[0] ? x : a * 0);
             }
 
             xe = bitFloor(xe);
@@ -1819,8 +1821,8 @@
             xc = xc.slice();
 
             // Prepend zeros to equalise exponents. Faster to use reverse then do unshifts.
-            if ( a = xe - ye ) {
-                if ( a > 0 ) {
+            if (a = xe - ye) {
+                if (a > 0) {
                     ye = xe;
                     t = yc;
                 } else {
@@ -1829,7 +1831,7 @@
                 }
 
                 t.reverse();
-                for ( ; a--; t.push(0) );
+                for (; a--; t.push(0));
                 t.reverse();
             }
 
@@ -1837,11 +1839,11 @@
             b = yc.length;
 
             // Point xc to the longer array, and b to the shorter length.
-            if ( a - b < 0 ) t = yc, yc = xc, xc = t, b = a;
+            if (a - b < 0) t = yc, yc = xc, xc = t, b = a;
 
             // Only start adding at yc.length - 1 as the further digits of xc can be ignored.
-            for ( a = 0; b; ) {
-                a = ( xc[--b] = xc[b] + yc[b] + a ) / BASE | 0;
+            for (a = 0; b;) {
+                a = (xc[--b] = xc[b] + yc[b] + a) / BASE | 0;
                 xc[b] %= BASE;
             }
 
@@ -1852,7 +1854,7 @@
 
             // No need to check for zero, as +x + +y != 0 && -x + -y != 0
             // ye = MAX_EXP + 1 possible
-            return normalise( y, xc, ye );
+            return normalise(y, xc, ye);
         };
 
 
@@ -1867,25 +1869,25 @@
                 c = x.c;
 
             // 'precision() argument not a boolean or binary digit: {z}'
-            if ( z != null && z !== !!z && z !== 1 && z !== 0 ) {
-                if (ERRORS) raise( 13, 'argument' + notBool, z );
-                if ( z != !!z ) z = null;
+            if (z != null && z !== !!z && z !== 1 && z !== 0) {
+                if (ERRORS) raise(13, 'argument' + notBool, z);
+                if (z != !!z) z = null;
             }
 
-            if ( !c ) return null;
+            if (!c) return null;
             v = c.length - 1;
             n = v * LOG_BASE + 1;
 
-            if ( v = c[v] ) {
+            if (v = c[v]) {
 
                 // Subtract the number of trailing zeros of the last element.
-                for ( ; v % 10 == 0; v /= 10, n-- );
+                for (; v % 10 == 0; v /= 10, n--);
 
                 // Add the number of digits of the first element.
-                for ( v = c[0]; v >= 10; v /= 10, n++ );
+                for (v = c[0]; v >= 10; v /= 10, n++);
             }
 
-            if ( z && x.e + 1 > n ) n = x.e + 1;
+            if (z && x.e + 1 > n) n = x.e + 1;
 
             return n;
         };
@@ -1904,12 +1906,12 @@
          * 'round() rounding mode not an integer: {rm}'
          * 'round() rounding mode out of range: {rm}'
          */
-        P.round = function ( dp, rm ) {
+        P.round = function (dp, rm) {
             var n = new BigNumber(this);
 
-            if ( dp == null || isValidInt( dp, 0, MAX, 15 ) ) {
-                round( n, ~~dp + this.e + 1, rm == null ||
-                  !isValidInt( rm, 0, 8, 15, roundingMode ) ? ROUNDING_MODE : rm | 0 );
+            if (dp == null || isValidInt(dp, 0, MAX, 15)) {
+                round(n, ~~dp + this.e + 1, rm == null ||
+                    !isValidInt(rm, 0, 8, 15, roundingMode) ? ROUNDING_MODE : rm | 0);
             }
 
             return n;
@@ -1930,13 +1932,13 @@
          */
         P.shift = function (k) {
             var n = this;
-            return isValidInt( k, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER, 16, 'argument' )
+            return isValidInt(k, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER, 16, 'argument')
 
-              // k < 1e+21, or truncate(k) will produce exponential notation.
-              ? n.times( '1e' + truncate(k) )
-              : new BigNumber( n.c && n.c[0] && ( k < -MAX_SAFE_INTEGER || k > MAX_SAFE_INTEGER )
-                ? n.s * ( k < 0 ? 0 : 1 / 0 )
-                : n );
+                // k < 1e+21, or truncate(k) will produce exponential notation.
+                ? n.times('1e' + truncate(k))
+                : new BigNumber(n.c && n.c[0] && (k < -MAX_SAFE_INTEGER || k > MAX_SAFE_INTEGER)
+                    ? n.s * (k < 0 ? 0 : 1 / 0)
+                    : n);
         };
 
 
@@ -1961,67 +1963,67 @@
                 half = new BigNumber('0.5');
 
             // Negative/NaN/Infinity/zero?
-            if ( s !== 1 || !c || !c[0] ) {
-                return new BigNumber( !s || s < 0 && ( !c || c[0] ) ? NaN : c ? x : 1 / 0 );
+            if (s !== 1 || !c || !c[0]) {
+                return new BigNumber(!s || s < 0 && (!c || c[0]) ? NaN : c ? x : 1 / 0);
             }
 
             // Initial estimate.
-            s = Math.sqrt( +x );
+            s = Math.sqrt(+x);
 
             // Math.sqrt underflow/overflow?
             // Pass x to Math.sqrt as integer, then adjust the exponent of the result.
-            if ( s == 0 || s == 1 / 0 ) {
+            if (s == 0 || s == 1 / 0) {
                 n = coeffToString(c);
-                if ( ( n.length + e ) % 2 == 0 ) n += '0';
+                if ((n.length + e) % 2 == 0) n += '0';
                 s = Math.sqrt(n);
-                e = bitFloor( ( e + 1 ) / 2 ) - ( e < 0 || e % 2 );
+                e = bitFloor((e + 1) / 2) - (e < 0 || e % 2);
 
-                if ( s == 1 / 0 ) {
+                if (s == 1 / 0) {
                     n = '1e' + e;
                 } else {
                     n = s.toExponential();
-                    n = n.slice( 0, n.indexOf('e') + 1 ) + e;
+                    n = n.slice(0, n.indexOf('e') + 1) + e;
                 }
 
                 r = new BigNumber(n);
             } else {
-                r = new BigNumber( s + '' );
+                r = new BigNumber(s + '');
             }
 
             // Check for zero.
             // r could be zero if MIN_EXP is changed after the this value was created.
             // This would cause a division by zero (x/t) and hence Infinity below, which would cause
             // coeffToString to throw.
-            if ( r.c[0] ) {
+            if (r.c[0]) {
                 e = r.e;
                 s = e + dp;
-                if ( s < 3 ) s = 0;
+                if (s < 3) s = 0;
 
                 // Newton-Raphson iteration.
-                for ( ; ; ) {
+                for (; ;) {
                     t = r;
-                    r = half.times( t.plus( div( x, t, dp, 1 ) ) );
+                    r = half.times(t.plus(div(x, t, dp, 1)));
 
-                    if ( coeffToString( t.c   ).slice( 0, s ) === ( n =
-                         coeffToString( r.c ) ).slice( 0, s ) ) {
+                    if (coeffToString(t.c).slice(0, s) === (n =
+                        coeffToString(r.c)).slice(0, s)) {
 
                         // The exponent of r may here be one less than the final result exponent,
                         // e.g 0.0009999 (e-4) --> 0.001 (e-3), so adjust s so the rounding digits
                         // are indexed correctly.
-                        if ( r.e < e ) --s;
-                        n = n.slice( s - 3, s + 1 );
+                        if (r.e < e)--s;
+                        n = n.slice(s - 3, s + 1);
 
                         // The 4th rounding digit may be in error by -1 so if the 4 rounding digits
                         // are 9999 or 4999 (i.e. approaching a rounding boundary) continue the
                         // iteration.
-                        if ( n == '9999' || !rep && n == '4999' ) {
+                        if (n == '9999' || !rep && n == '4999') {
 
                             // On the first iteration only, check to see if rounding up gives the
                             // exact result as the nines may infinitely repeat.
-                            if ( !rep ) {
-                                round( t, t.e + DECIMAL_PLACES + 2, 0 );
+                            if (!rep) {
+                                round(t, t.e + DECIMAL_PLACES + 2, 0);
 
-                                if ( t.times(t).eq(x) ) {
+                                if (t.times(t).eq(x)) {
                                     r = t;
                                     break;
                                 }
@@ -2034,10 +2036,10 @@
 
                             // If rounding digits are null, 0{0,4} or 50{0,3}, check for exact
                             // result. If not, then there are further digits and m will be truthy.
-                            if ( !+n || !+n.slice(1) && n.charAt(0) == '5' ) {
+                            if (!+n || !+n.slice(1) && n.charAt(0) == '5') {
 
                                 // Truncate to the first rounding digit.
-                                round( r, r.e + DECIMAL_PLACES + 2, 1 );
+                                round(r, r.e + DECIMAL_PLACES + 2, 1);
                                 m = !r.times(r).eq(x);
                             }
 
@@ -2047,7 +2049,7 @@
                 }
             }
 
-            return round( r, r.e + DECIMAL_PLACES + 1, ROUNDING_MODE, m );
+            return round(r, r.e + DECIMAL_PLACES + 1, ROUNDING_MODE, m);
         };
 
 
@@ -2071,27 +2073,27 @@
          * Return a new BigNumber whose value is the value of this BigNumber times the value of
          * BigNumber(y, b).
          */
-        P.times = P.mul = function ( y, b ) {
+        P.times = P.mul = function (y, b) {
             var c, e, i, j, k, m, xcL, xlo, xhi, ycL, ylo, yhi, zc,
                 base, sqrtBase,
                 x = this,
                 xc = x.c,
-                yc = ( id = 17, y = new BigNumber( y, b ) ).c;
+                yc = (id = 17, y = new BigNumber(y, b)).c;
 
             // Either NaN, ±Infinity or ±0?
-            if ( !xc || !yc || !xc[0] || !yc[0] ) {
+            if (!xc || !yc || !xc[0] || !yc[0]) {
 
                 // Return NaN if either is NaN, or one is 0 and the other is Infinity.
-                if ( !x.s || !y.s || xc && !xc[0] && !yc || yc && !yc[0] && !xc ) {
+                if (!x.s || !y.s || xc && !xc[0] && !yc || yc && !yc[0] && !xc) {
                     y.c = y.e = y.s = null;
                 } else {
                     y.s *= x.s;
 
                     // Return ±Infinity if either is ±Infinity.
-                    if ( !xc || !yc ) {
+                    if (!xc || !yc) {
                         y.c = y.e = null;
 
-                    // Return ±0 if either is ±0.
+                        // Return ±0 if either is ±0.
                     } else {
                         y.c = [0];
                         y.e = 0;
@@ -2101,31 +2103,31 @@
                 return y;
             }
 
-            e = bitFloor( x.e / LOG_BASE ) + bitFloor( y.e / LOG_BASE );
+            e = bitFloor(x.e / LOG_BASE) + bitFloor(y.e / LOG_BASE);
             y.s *= x.s;
             xcL = xc.length;
             ycL = yc.length;
 
             // Ensure xc points to longer array and xcL to its length.
-            if ( xcL < ycL ) zc = xc, xc = yc, yc = zc, i = xcL, xcL = ycL, ycL = i;
+            if (xcL < ycL) zc = xc, xc = yc, yc = zc, i = xcL, xcL = ycL, ycL = i;
 
             // Initialise the result array with zeros.
-            for ( i = xcL + ycL, zc = []; i--; zc.push(0) );
+            for (i = xcL + ycL, zc = []; i--; zc.push(0));
 
             base = BASE;
             sqrtBase = SQRT_BASE;
 
-            for ( i = ycL; --i >= 0; ) {
+            for (i = ycL; --i >= 0;) {
                 c = 0;
                 ylo = yc[i] % sqrtBase;
                 yhi = yc[i] / sqrtBase | 0;
 
-                for ( k = xcL, j = i + k; j > i; ) {
+                for (k = xcL, j = i + k; j > i;) {
                     xlo = xc[--k] % sqrtBase;
                     xhi = xc[k] / sqrtBase | 0;
                     m = yhi * xlo + xhi * ylo;
-                    xlo = ylo * xlo + ( ( m % sqrtBase ) * sqrtBase ) + zc[j] + c;
-                    c = ( xlo / base | 0 ) + ( m / sqrtBase | 0 ) + yhi * xhi;
+                    xlo = ylo * xlo + ((m % sqrtBase) * sqrtBase) + zc[j] + c;
+                    c = (xlo / base | 0) + (m / sqrtBase | 0) + yhi * xhi;
                     zc[j--] = xlo % base;
                 }
 
@@ -2138,7 +2140,7 @@
                 zc.shift();
             }
 
-            return normalise( y, zc, e );
+            return normalise(y, zc, e);
         };
 
 
@@ -2154,11 +2156,11 @@
          * 'toDigits() rounding mode not an integer: {rm}'
          * 'toDigits() rounding mode out of range: {rm}'
          */
-        P.toDigits = function ( sd, rm ) {
+        P.toDigits = function (sd, rm) {
             var n = new BigNumber(this);
-            sd = sd == null || !isValidInt( sd, 1, MAX, 18, 'precision' ) ? null : sd | 0;
-            rm = rm == null || !isValidInt( rm, 0, 8, 18, roundingMode ) ? ROUNDING_MODE : rm | 0;
-            return sd ? round( n, sd, rm ) : n;
+            sd = sd == null || !isValidInt(sd, 1, MAX, 18, 'precision') ? null : sd | 0;
+            rm = rm == null || !isValidInt(rm, 0, 8, 18, roundingMode) ? ROUNDING_MODE : rm | 0;
+            return sd ? round(n, sd, rm) : n;
         };
 
 
@@ -2174,9 +2176,9 @@
          * 'toExponential() rounding mode not an integer: {rm}'
          * 'toExponential() rounding mode out of range: {rm}'
          */
-        P.toExponential = function ( dp, rm ) {
-            return format( this,
-              dp != null && isValidInt( dp, 0, MAX, 19 ) ? ~~dp + 1 : null, rm, 19 );
+        P.toExponential = function (dp, rm) {
+            return format(this,
+                dp != null && isValidInt(dp, 0, MAX, 19) ? ~~dp + 1 : null, rm, 19);
         };
 
 
@@ -2195,9 +2197,9 @@
          * 'toFixed() rounding mode not an integer: {rm}'
          * 'toFixed() rounding mode out of range: {rm}'
          */
-        P.toFixed = function ( dp, rm ) {
-            return format( this, dp != null && isValidInt( dp, 0, MAX, 20 )
-              ? ~~dp + this.e + 1 : null, rm, 20 );
+        P.toFixed = function (dp, rm) {
+            return format(this, dp != null && isValidInt(dp, 0, MAX, 20)
+                ? ~~dp + this.e + 1 : null, rm, 20);
         };
 
 
@@ -2223,11 +2225,11 @@
          * 'toFormat() rounding mode not an integer: {rm}'
          * 'toFormat() rounding mode out of range: {rm}'
          */
-        P.toFormat = function ( dp, rm ) {
-            var str = format( this, dp != null && isValidInt( dp, 0, MAX, 21 )
-              ? ~~dp + this.e + 1 : null, rm, 21 );
+        P.toFormat = function (dp, rm) {
+            var str = format(this, dp != null && isValidInt(dp, 0, MAX, 21)
+                ? ~~dp + this.e + 1 : null, rm, 21);
 
-            if ( this.c ) {
+            if (this.c) {
                 var i,
                     arr = str.split('.'),
                     g1 = +FORMAT.groupSize,
@@ -2241,24 +2243,24 @@
 
                 if (g2) i = g1, g1 = g2, g2 = i, len -= i;
 
-                if ( g1 > 0 && len > 0 ) {
+                if (g1 > 0 && len > 0) {
                     i = len % g1 || g1;
-                    intPart = intDigits.substr( 0, i );
+                    intPart = intDigits.substr(0, i);
 
-                    for ( ; i < len; i += g1 ) {
-                        intPart += groupSeparator + intDigits.substr( i, g1 );
+                    for (; i < len; i += g1) {
+                        intPart += groupSeparator + intDigits.substr(i, g1);
                     }
 
-                    if ( g2 > 0 ) intPart += groupSeparator + intDigits.slice(i);
+                    if (g2 > 0) intPart += groupSeparator + intDigits.slice(i);
                     if (isNeg) intPart = '-' + intPart;
                 }
 
                 str = fractionPart
-                  ? intPart + FORMAT.decimalSeparator + ( ( g2 = +FORMAT.fractionGroupSize )
-                    ? fractionPart.replace( new RegExp( '\\d{' + g2 + '}\\B', 'g' ),
-                      '$&' + FORMAT.fractionGroupSeparator )
-                    : fractionPart )
-                  : intPart;
+                    ? intPart + FORMAT.decimalSeparator + ((g2 = +FORMAT.fractionGroupSize)
+                        ? fractionPart.replace(new RegExp('\\d{' + g2 + '}\\B', 'g'),
+                            '$&' + FORMAT.fractionGroupSeparator)
+                        : fractionPart)
+                    : intPart;
             }
 
             return str;
@@ -2286,32 +2288,32 @@
                 n1 = d0 = new BigNumber(ONE),
                 d1 = n0 = new BigNumber(ONE);
 
-            if ( md != null ) {
+            if (md != null) {
                 ERRORS = false;
                 n = new BigNumber(md);
                 ERRORS = k;
 
-                if ( !( k = n.isInt() ) || n.lt(ONE) ) {
+                if (!(k = n.isInt()) || n.lt(ONE)) {
 
                     if (ERRORS) {
-                        raise( 22,
-                          'max denominator ' + ( k ? 'out of range' : 'not an integer' ), md );
+                        raise(22,
+                            'max denominator ' + (k ? 'out of range' : 'not an integer'), md);
                     }
 
                     // ERRORS is false:
                     // If md is a finite non-integer >= 1, round it to an integer and use it.
-                    md = !k && n.c && round( n, n.e + 1, 1 ).gte(ONE) ? n : null;
+                    md = !k && n.c && round(n, n.e + 1, 1).gte(ONE) ? n : null;
                 }
             }
 
-            if ( !xc ) return x.toString();
+            if (!xc) return x.toString();
             s = coeffToString(xc);
 
             // Determine initial denominator.
             // d is a power of 10 and the minimum max denominator that specifies the value exactly.
             e = d.e = s.length - x.e - 1;
-            d.c[0] = POWS_TEN[ ( exp = e % LOG_BASE ) < 0 ? LOG_BASE + exp : exp ];
-            md = !md || n.cmp(d) > 0 ? ( e > 0 ? d : n1 ) : n;
+            d.c[0] = POWS_TEN[(exp = e % LOG_BASE) < 0 ? LOG_BASE + exp : exp];
+            md = !md || n.cmp(d) > 0 ? (e > 0 ? d : n1) : n;
 
             exp = MAX_EXP;
             MAX_EXP = 1 / 0;
@@ -2320,29 +2322,29 @@
             // n0 = d1 = 0
             n0.c[0] = 0;
 
-            for ( ; ; )  {
-                q = div( n, d, 0, 1 );
-                d2 = d0.plus( q.times(d1) );
-                if ( d2.cmp(md) == 1 ) break;
+            for (; ;) {
+                q = div(n, d, 0, 1);
+                d2 = d0.plus(q.times(d1));
+                if (d2.cmp(md) == 1) break;
                 d0 = d1;
                 d1 = d2;
-                n1 = n0.plus( q.times( d2 = n1 ) );
+                n1 = n0.plus(q.times(d2 = n1));
                 n0 = d2;
-                d = n.minus( q.times( d2 = d ) );
+                d = n.minus(q.times(d2 = d));
                 n = d2;
             }
 
-            d2 = div( md.minus(d0), d1, 0, 1 );
-            n0 = n0.plus( d2.times(n1) );
-            d0 = d0.plus( d2.times(d1) );
+            d2 = div(md.minus(d0), d1, 0, 1);
+            n0 = n0.plus(d2.times(n1));
+            d0 = d0.plus(d2.times(d1));
             n0.s = n1.s = x.s;
             e *= 2;
 
             // Determine which fraction is closer to x, n0/d0 or n1/d1
-            arr = div( n1, d1, e, ROUNDING_MODE ).minus(x).abs().cmp(
-                  div( n0, d0, e, ROUNDING_MODE ).minus(x).abs() ) < 1
-                    ? [ n1.toString(), d1.toString() ]
-                    : [ n0.toString(), d0.toString() ];
+            arr = div(n1, d1, e, ROUNDING_MODE).minus(x).abs().cmp(
+                div(n0, d0, e, ROUNDING_MODE).minus(x).abs()) < 1
+                ? [n1.toString(), d1.toString()]
+                : [n0.toString(), d0.toString()];
 
             MAX_EXP = exp;
             return arr;
@@ -2356,7 +2358,7 @@
             var x = this;
 
             // Ensure zero has correct sign.
-            return +x || ( x.s ? x.s * 0 : NaN );
+            return +x || (x.s ? x.s * 0 : NaN);
         };
 
 
@@ -2373,39 +2375,39 @@
          */
         P.toPower = P.pow = function (n) {
             var k, y,
-                i = mathfloor( n < 0 ? -n : +n ),
+                i = mathfloor(n < 0 ? -n : +n),
                 x = this;
 
             // Pass ±Infinity to Math.pow if exponent is out of range.
-            if ( !isValidInt( n, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER, 23, 'exponent' ) &&
-              ( !isFinite(n) || i > MAX_SAFE_INTEGER && ( n /= 0 ) ||
-                parseFloat(n) != n && !( n = NaN ) ) ) {
-                return new BigNumber( Math.pow( +x, n ) );
+            if (!isValidInt(n, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER, 23, 'exponent') &&
+                (!isFinite(n) || i > MAX_SAFE_INTEGER && (n /= 0) ||
+                    parseFloat(n) != n && !(n = NaN))) {
+                return new BigNumber(Math.pow(+x, n));
             }
 
             // Truncating each coefficient array to a length of k after each multiplication equates
             // to truncating significant digits to POW_PRECISION + [28, 41], i.e. there will be a
             // minimum of 28 guard digits retained. (Using + 1.5 would give [9, 21] guard digits.)
-            k = POW_PRECISION ? mathceil( POW_PRECISION / LOG_BASE + 2 ) : 0;
+            k = POW_PRECISION ? mathceil(POW_PRECISION / LOG_BASE + 2) : 0;
             y = new BigNumber(ONE);
 
-            for ( ; ; ) {
+            for (; ;) {
 
-                if ( i % 2 ) {
+                if (i % 2) {
                     y = y.times(x);
-                    if ( !y.c ) break;
-                    if ( k && y.c.length > k ) y.c.length = k;
+                    if (!y.c) break;
+                    if (k && y.c.length > k) y.c.length = k;
                 }
 
-                i = mathfloor( i / 2 );
-                if ( !i ) break;
+                i = mathfloor(i / 2);
+                if (!i) break;
 
                 x = x.times(x);
-                if ( k && x.c && x.c.length > k ) x.c.length = k;
+                if (k && x.c && x.c.length > k) x.c.length = k;
             }
 
-            if ( n < 0 ) y = ONE.div(y);
-            return k ? round( y, POW_PRECISION, ROUNDING_MODE ) : y;
+            if (n < 0) y = ONE.div(y);
+            return k ? round(y, POW_PRECISION, ROUNDING_MODE) : y;
         };
 
 
@@ -2423,9 +2425,9 @@
          * 'toPrecision() rounding mode not an integer: {rm}'
          * 'toPrecision() rounding mode out of range: {rm}'
          */
-        P.toPrecision = function ( sd, rm ) {
-            return format( this, sd != null && isValidInt( sd, 1, MAX, 24, 'precision' )
-              ? sd | 0 : null, rm, 24 );
+        P.toPrecision = function (sd, rm) {
+            return format(this, sd != null && isValidInt(sd, 1, MAX, 24, 'precision')
+                ? sd | 0 : null, rm, 24);
         };
 
 
@@ -2448,26 +2450,26 @@
                 e = n.e;
 
             // Infinity or NaN?
-            if ( e === null ) {
+            if (e === null) {
 
                 if (s) {
                     str = 'Infinity';
-                    if ( s < 0 ) str = '-' + str;
+                    if (s < 0) str = '-' + str;
                 } else {
                     str = 'NaN';
                 }
             } else {
-                str = coeffToString( n.c );
+                str = coeffToString(n.c);
 
-                if ( b == null || !isValidInt( b, 2, 64, 25, 'base' ) ) {
+                if (b == null || !isValidInt(b, 2, 64, 25, 'base')) {
                     str = e <= TO_EXP_NEG || e >= TO_EXP_POS
-                      ? toExponential( str, e )
-                      : toFixedPoint( str, e );
+                        ? toExponential(str, e)
+                        : toFixedPoint(str, e);
                 } else {
-                    str = convertBase( toFixedPoint( str, e ), b | 0, 10, s );
+                    str = convertBase(toFixedPoint(str, e), b | 0, 10, s);
                 }
 
-                if ( s < 0 && n.c[0] ) str = '-' + str;
+                if (s < 0 && n.c[0]) str = '-' + str;
             }
 
             return str;
@@ -2479,7 +2481,7 @@
          * number.
          */
         P.truncated = P.trunc = function () {
-            return round( new BigNumber(this), this.e + 1, 1 );
+            return round(new BigNumber(this), this.e + 1, 1);
         };
 
 
@@ -2502,7 +2504,7 @@
         //P.negate = P.neg;
 
 
-        if ( configObj != null ) BigNumber.config(configObj);
+        if (configObj != null) BigNumber.config(configObj);
 
         return BigNumber;
     }
@@ -2524,21 +2526,21 @@
             j = a.length,
             r = a[0] + '';
 
-        for ( ; i < j; ) {
+        for (; i < j;) {
             s = a[i++] + '';
             z = LOG_BASE - s.length;
-            for ( ; z--; s = '0' + s );
+            for (; z--; s = '0' + s);
             r += s;
         }
 
         // Determine trailing zeros.
-        for ( j = r.length; r.charCodeAt(--j) === 48; );
-        return r.slice( 0, j + 1 || 1 );
+        for (j = r.length; r.charCodeAt(--j) === 48;);
+        return r.slice(0, j + 1 || 1);
     }
 
 
     // Compare the value of BigNumbers x and y.
-    function compare( x, y ) {
+    function compare(x, y) {
         var a, b,
             xc = x.c,
             yc = y.c,
@@ -2548,30 +2550,30 @@
             l = y.e;
 
         // Either NaN?
-        if ( !i || !j ) return null;
+        if (!i || !j) return null;
 
         a = xc && !xc[0];
         b = yc && !yc[0];
 
         // Either zero?
-        if ( a || b ) return a ? b ? 0 : -j : i;
+        if (a || b) return a ? b ? 0 : -j : i;
 
         // Signs differ?
-        if ( i != j ) return i;
+        if (i != j) return i;
 
         a = i < 0;
         b = k == l;
 
         // Either Infinity?
-        if ( !xc || !yc ) return b ? 0 : !xc ^ a ? 1 : -1;
+        if (!xc || !yc) return b ? 0 : !xc ^ a ? 1 : -1;
 
         // Compare exponents.
-        if ( !b ) return k > l ^ a ? 1 : -1;
+        if (!b) return k > l ^ a ? 1 : -1;
 
-        j = ( k = xc.length ) < ( l = yc.length ) ? k : l;
+        j = (k = xc.length) < (l = yc.length) ? k : l;
 
         // Compare digit by digit.
-        for ( i = 0; i < j; i++ ) if ( xc[i] != yc[i] ) return xc[i] > yc[i] ^ a ? 1 : -1;
+        for (i = 0; i < j; i++) if (xc[i] != yc[i]) return xc[i] > yc[i] ^ a ? 1 : -1;
 
         // Compare lengths.
         return k == l ? 0 : k > l ^ a ? 1 : -1;
@@ -2583,8 +2585,8 @@
      * Use for argument validation when ERRORS is false.
      * Note: parseInt('1e+1') == 1 but parseFloat('1e+1') == 10.
      */
-    function intValidatorNoErrors( n, min, max ) {
-        return ( n = truncate(n) ) >= min && n <= max;
+    function intValidatorNoErrors(n, min, max) {
+        return (n = truncate(n)) >= min && n <= max;
     }
 
 
@@ -2598,21 +2600,21 @@
      * Eg. convertBase('255', 10, 16) returns [15, 15].
      * Eg. convertBase('ff', 16, 10) returns [2, 5, 5].
      */
-    function toBaseOut( str, baseIn, baseOut ) {
+    function toBaseOut(str, baseIn, baseOut) {
         var j,
             arr = [0],
             arrL,
             i = 0,
             len = str.length;
 
-        for ( ; i < len; ) {
-            for ( arrL = arr.length; arrL--; arr[arrL] *= baseIn );
-            arr[ j = 0 ] += ALPHABET.indexOf( str.charAt( i++ ) );
+        for (; i < len;) {
+            for (arrL = arr.length; arrL--; arr[arrL] *= baseIn);
+            arr[j = 0] += ALPHABET.indexOf(str.charAt(i++));
 
-            for ( ; j < arr.length; j++ ) {
+            for (; j < arr.length; j++) {
 
-                if ( arr[j] > baseOut - 1 ) {
-                    if ( arr[j + 1] == null ) arr[j + 1] = 0;
+                if (arr[j] > baseOut - 1) {
+                    if (arr[j + 1] == null) arr[j + 1] = 0;
                     arr[j + 1] += arr[j] / baseOut | 0;
                     arr[j] %= baseOut;
                 }
@@ -2623,32 +2625,32 @@
     }
 
 
-    function toExponential( str, e ) {
-        return ( str.length > 1 ? str.charAt(0) + '.' + str.slice(1) : str ) +
-          ( e < 0 ? 'e' : 'e+' ) + e;
+    function toExponential(str, e) {
+        return (str.length > 1 ? str.charAt(0) + '.' + str.slice(1) : str) +
+            (e < 0 ? 'e' : 'e+') + e;
     }
 
 
-    function toFixedPoint( str, e ) {
+    function toFixedPoint(str, e) {
         var len, z;
 
         // Negative exponent?
-        if ( e < 0 ) {
+        if (e < 0) {
 
             // Prepend zeros.
-            for ( z = '0.'; ++e; z += '0' );
+            for (z = '0.'; ++e; z += '0');
             str = z + str;
 
-        // Positive exponent
+            // Positive exponent
         } else {
             len = str.length;
 
             // Append zeros.
-            if ( ++e > len ) {
-                for ( z = '0', e -= len; --e; z += '0' );
+            if (++e > len) {
+                for (z = '0', e -= len; --e; z += '0');
                 str += z;
-            } else if ( e < len ) {
-                str = str.slice( 0, e ) + '.' + str.slice(e);
+            } else if (e < len) {
+                str = str.slice(0, e) + '.' + str.slice(e);
             }
         }
 
@@ -2666,17 +2668,15 @@
 
 
     BigNumber = another();
-
-    // AMD.
-    if ( typeof define == 'function' && define.amd ) {
-        define( function () { return BigNumber; } );
-
+    
     // Node and other environments that support module.exports.
-    } else if ( typeof module != 'undefined' && module.exports ) {
+    if (typeof module != 'undefined' && module.exports) {
         module.exports = BigNumber;
-        if ( !crypto ) try { crypto = require('crypto'); } catch (e) {}
-
-    // Browser.
+        if (!crypto) try { crypto = require('crypto'); } catch (e) { }
+        // AMD.
+    } else if (typeof define == 'function' && define.amd) {
+        define(function () { return BigNumber; });
+        // Browser.
     } else {
         global.BigNumber = BigNumber;
     }
